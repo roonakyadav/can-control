@@ -2,41 +2,24 @@ import asyncio
 import os
 from dotenv import load_dotenv
 from browser_use import Agent
-from langchain_openai import ChatOpenAI
+from browser_use.llm import ChatGroq
 
 load_dotenv()
 
-llm = ChatOpenAI(
-    model="openai/gpt-4o-mini",
-    openai_api_key=os.getenv("OPENROUTER_API_KEY"),
-    openai_api_base="https://openrouter.ai/api/v1",
+llm = ChatGroq(
+    model="meta-llama/llama-4-scout-17b-16e-instruct",
+    api_key=os.getenv("GROQ_API_KEY"),
 )
 
-task = """
-You are a hackathon finder agent. Find free hackathons, not coding contests for a student in Bangalore. Im talking about hackathons where we build with AI and has no registration fee.
 
-Search these websites one by one:
-1. https://devfolio.co/hackathons
-2. https://unstop.com/hackathons
-3. https://hackerearth.com/challenges/hackathon
-4. https://dare2compete.com/hackathons
+email = os.getenv("GMAIL_EMAIL")
+password = os.getenv("GMAIL_PASSWORD")
 
-Criteria - include hackathon if ANY match:
-- Located in Bangalore/Bengaluru
-- Fully online or has online round
-- Organized by IIT, NIT, IIIT, Scaler, Polaris, Newton School of Technology, or big tech companies
+task = f"""
+Go to scaler.com and login with email {email} and password {password}.
+After logging in, find what classes have been happened in last 5 days, summarize everything that has heppend in last 5 days like which classes in which subjects, name of classes and read their notes and give me a summary of last 5 days
 
-Exclude any hackathon with entry fee.
-
-For each hackathon extract:
-- Name
-- Date
-- Location
-- Organizer
-- FULL registration URL (always prefix with the website domain)
-- Prize money
-
-After visiting ALL 4 websites, return the complete results as plain text.
+Return the results as plain text.
 """
 
 async def main():
@@ -45,12 +28,12 @@ async def main():
         llm=llm,
         use_vision=False,
     )
-    result = await agent.run()
-
-    # Save to file
-    with open("hackathons.txt", "w") as f:
-        f.write(result.final_result())
-    
-    print("\n✅ Saved to hackathons.txt")
+    result = await agent.run(max_steps=15)
+    answer = result.final_result()
+    if answer:
+        print("\n✅ Result:\n")
+        print(answer)
+    else:
+        print("❌ Could not extract results")
 
 asyncio.run(main())
