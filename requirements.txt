@@ -1,0 +1,6 @@
+browser-use>=0.1.40
+langchain-openai
+langchain-groq
+python-dotenv
+python-telegram-bot
+playwright

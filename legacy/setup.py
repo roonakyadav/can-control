@@ -17,6 +17,7 @@ subprocess.run("uv venv .venv", shell=True)
 packages = [
     "browser-use==0.1.40",
     "langchain-groq",
+    "langchain-openai",
     "langchain-core",
     "python-dotenv",
     "playwright",
