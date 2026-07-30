@@ -33,7 +33,7 @@ This project allows you to control a browser agent through a Telegram bot. You s
 ### 2. Installation
 ```bash
 # Clone the repository
-git clone <your-repo-url>
+git clone https://github.com/roonakyadav/can-control
 cd browser-agent
 
 # Create and activate virtual environment
